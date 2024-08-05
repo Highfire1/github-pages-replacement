@@ -6,7 +6,7 @@ on:
       - 'main'
 
 jobs:
-  docker:
+  build_docker_image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout files
@@ -31,5 +31,7 @@ jobs:
           context: .
           platforms: linux/arm64
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: |
             ghcr.io/highfire1/github-pages-replacement:latest
