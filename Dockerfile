@@ -2,10 +2,17 @@ FROM nginx:alpine
 
 # Install dependencies
 RUN apk add --no-cache git python3 py3-pip
-RUN pip3 install flask
+
+# Create and activate a virtual environment
+RUN python3 -m venv /venv
+
+# Install Flask inside the virtual environment
+RUN /venv/bin/pip install flask
+
+RUN rm -rf /usr/share/nginx/html/*
 
 # Clone your repository
-RUN git clone https://github.com/username/repository.git /usr/share/nginx/html
+RUN git clone https://github.com/highfire1/highfire1.github.io.git /usr/share/nginx/html
 
 # Set the working directory
 WORKDIR /usr/share/nginx/html
@@ -21,4 +28,4 @@ EXPOSE 5000
 
 # Start the cron, flask, and nginx in foreground
 # CMD ["sh", "-c", "crond && python3 /webhook.py & nginx -g 'daemon off;'"]
-CMD ["python3 /webhook.py & nginx -g 'daemon off;'"]
+CMD ["/venv/bin/python /webhook.py & nginx -g 'daemon off;'"]
