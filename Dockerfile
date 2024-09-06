@@ -6,8 +6,8 @@ RUN apk add --no-cache git python3 py3-pip
 # Create and activate a virtual environment
 RUN python3 -m venv /venv
 
-# Install Flask inside the virtual environment
-RUN /venv/bin/pip install flask
+# Install Flask and gitpython inside the virtual environment
+RUN /venv/bin/pip install flask gitpython
 
 # Remove existing contents in the Nginx HTML directory
 RUN rm -rf /usr/share/nginx/html/*
