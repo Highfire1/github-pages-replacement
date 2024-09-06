@@ -10,15 +10,36 @@ WEBHOOK_PASSWORD = os.environ.get('WEBHOOK_PASSWORD')
 
 @app.route('/')
 def index():
-    return render_template_string('<h1>Welcome</h1><p>No content has been set yet.</p>')
+    repo_dir = '/usr/share/nginx/html'
+    if os.path.exists(repo_dir) and os.listdir(repo_dir):
+        status = "Content has been set."
+    else:
+        status = "No content has been set yet."
+    
+    form_html = '''
+    <form action="/update" method="post">
+        <label for="git_url">Git Repository URL:</label><br>
+        <input type="text" id="git_url" name="git_url" required><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br>
+        <input type="submit" value="Update Content">
+    </form>
+    '''
+    
+    return render_template_string(f'''
+        <h1>Welcome</h1>
+        <p>{status}</p>
+        <h2>Update Content</h2>
+        {form_html}
+    ''')
 
 @app.route('/update', methods=['POST'])
 def update():
     # Check password
-    if request.json.get('password') != WEBHOOK_PASSWORD:
+    if request.form.get('password') != WEBHOOK_PASSWORD:
         return 'Unauthorized', 401
 
-    git_url = request.json.get('git_url')
+    git_url = request.form.get('git_url')
     if not git_url:
         return 'Git URL is required', 400
 
