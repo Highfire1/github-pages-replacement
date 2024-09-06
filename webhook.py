@@ -35,9 +35,15 @@ def index():
 
 @app.route('/update', methods=['POST'])
 def update():
+    submitted_password = request.form.get('password')
+    
+    # Debug logging
+    print(f"Submitted password: {submitted_password}")
+    print(f"Expected password: {WEBHOOK_PASSWORD}")
+    
     # Check password
-    if request.form.get('password') != WEBHOOK_PASSWORD:
-        return 'Unauthorized', 401
+    if submitted_password != WEBHOOK_PASSWORD:
+        return f'Unauthorized. Submitted: {submitted_password}, Expected: {WEBHOOK_PASSWORD}', 401
 
     git_url = request.form.get('git_url')
     if not git_url:
